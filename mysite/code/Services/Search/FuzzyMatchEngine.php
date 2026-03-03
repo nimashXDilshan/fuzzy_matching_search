@@ -8,14 +8,14 @@ use SilverStripe\Core\Config\Configurable;
 
 /**
  * Enhanced Fuzzy Match Engine
- * 
+ *
  * Implements multiple fuzzy matching algorithms:
  * - Levenshtein distance (edit distance)
  * - Soundex phonetic matching
- * - Metaphone phonetic matching  
+ * - Metaphone phonetic matching
  * - N-gram similarity
  * - Partial/substring matching
- * 
+ *
  * Key Features:
  * - "Smit" will find "Smith"
  * - "Jon Doe" will find "John Doe"
@@ -89,7 +89,7 @@ class FuzzyMatchEngine
     public function fuzzySearch(DataList $list, string $searchTerm, array $fields, array $options = []): array
     {
         $searchTerm = $this->sanitizeSearchTerm($searchTerm);
-        
+
         if (strlen($searchTerm) < 2) {
             return [];
         }
@@ -107,10 +107,12 @@ class FuzzyMatchEngine
 
             foreach ($fields as $field) {
                 $fieldValue = $this->getFieldValue($record, $field);
-                if (empty($fieldValue)) continue;
+                if (empty($fieldValue)) {
+                    continue;
+                }
 
                 $fieldScore = $this->calculateFieldScore($searchTerm, $searchWords, $fieldValue, $field);
-                
+
                 if ($fieldScore > 0) {
                     $totalScore = max($totalScore, $fieldScore);
                     $matchedFields[] = $field;
@@ -127,7 +129,7 @@ class FuzzyMatchEngine
         }
 
         // Sort by score descending
-        usort($results, function($a, $b) {
+        usort($results, function ($a, $b) {
             return $b['score'] <=> $a['score'];
         });
 
@@ -141,14 +143,14 @@ class FuzzyMatchEngine
     {
         $searchTerm = trim($searchTerm);
         $words = $this->tokenize($searchTerm);
-        
+
         // Build filter conditions
         $filters = [];
-        
+
         foreach ($fields as $field) {
             // Exact match
             $filters["{$field}:PartialMatch"] = $searchTerm;
-            
+
             // Each word partial match
             foreach ($words as $word) {
                 if (strlen($word) >= 2) {
@@ -165,19 +167,19 @@ class FuzzyMatchEngine
 
         // Fall back to LIKE queries with phonetic expansion
         $phoneticTerms = $this->generatePhoneticVariants($searchTerm);
-        
+
         $filterGroups = [];
         foreach ($fields as $field) {
             // Original term
             $filterGroups[] = ["{$field}:PartialMatch" => $searchTerm];
-            
+
             // Each word
             foreach ($words as $word) {
                 if (strlen($word) >= 2) {
                     $filterGroups[] = ["{$field}:PartialMatch" => $word];
                 }
             }
-            
+
             // Common typo corrections
             $typoVariants = $this->generateTypoVariants($searchTerm);
             foreach ($typoVariants as $variant) {
@@ -220,15 +222,15 @@ class FuzzyMatchEngine
             // Build full-text search query
             $ftFields = implode(', ', array_map(fn($f) => "\"{$f}\"", $fields));
             $escapedTerm = addslashes($searchTerm);
-            
+
             // Use boolean mode with wildcards for partial matching
             $booleanTerm = implode(' ', array_map(
-                fn($w) => strlen($w) >= 2 ? "+{$w}*" : $w, 
+                fn($w) => strlen($w) >= 2 ? "+{$w}*" : $w,
                 $this->tokenize($searchTerm)
             ));
 
             $sql = "MATCH({$ftFields}) AGAINST('{$booleanTerm}' IN BOOLEAN MODE)";
-            
+
             return $list->where($sql);
         } catch (\Exception $e) {
             // Full-text not available, return null to use fallback
@@ -238,15 +240,19 @@ class FuzzyMatchEngine
 
     /**
      * Calculate match score for a field value using field-specific algorithms
-     * 
+     *
      * Routes to specialized matching functions based on field type:
      * - Names: Jaro-Winkler + Metaphone
      * - NIC/BR: Levenshtein (strict)
      * - Phone: Suffix matching
      * - Email/Org: Trigram similarity
      */
-    protected function calculateFieldScore(string $searchTerm, array $searchWords, string $fieldValue, string $fieldName): float
-    {
+    protected function calculateFieldScore(
+        string $searchTerm,
+        array $searchWords,
+        string $fieldValue,
+        string $fieldName
+    ): float {
         $fieldValue = strtolower(trim($fieldValue));
         $searchTerm = strtolower(trim($searchTerm));
 
@@ -268,20 +274,20 @@ class FuzzyMatchEngine
         switch ($fieldType) {
             case 'name':
                 return $this->matchName($searchTerm, $searchWords, $fieldValue);
-            
+
             case 'nic':
             case 'brNumber':
                 return $this->matchID($searchTerm, $fieldValue);
-            
+
             case 'phone':
                 return $this->matchPhone($searchTerm, $fieldValue);
-            
+
             case 'email':
                 return $this->matchEmail($searchTerm, $fieldValue);
-            
+
             case 'orgName':
                 return $this->matchOrgName($searchTerm, $fieldValue);
-            
+
             default:
                 // Fallback to generic word-level matching
                 return $this->matchGeneric($searchTerm, $searchWords, $fieldValue);
@@ -291,13 +297,13 @@ class FuzzyMatchEngine
     /**
      * Match personal names using Jaro-Winkler + Metaphone
      * Best for: FirstName, Surname
-     * 
+     *
      * Priority order (IDENTICAL to JavaScript demo):
      * 1. Exact full match (100%)
      * 2. Exact match to one of the search words (99%)
      * 3. Starts with search word (95%)
      * 4. Fuzzy match with Jaro-Winkler + Metaphone bonus (≤89%)
-     * 
+     *
      * NOTE: PHP searches each field (FirstName, Surname) separately.
      * For multi-word searches like "John Doe", if FirstName="John" gets 99%
      * and Surname="Doe" also gets 99%, the result will rank highly.
@@ -308,10 +314,10 @@ class FuzzyMatchEngine
         if (empty($fieldValue)) {
             return 0;
         }
-        
+
         $fieldValueLower = strtolower($fieldValue);
         $searchTermLower = strtolower(trim($searchTerm));
-        
+
         // ========================================
         // PRIORITY 1: Exact full match (100%)
         // Search term exactly matches field value
@@ -319,7 +325,7 @@ class FuzzyMatchEngine
         if ($fieldValueLower === $searchTermLower) {
             return 1.0;
         }
-        
+
         // ========================================
         // PRIORITY 2: Exact match to one of the search words (99%)
         // For multi-word searches like "John Doe", check if field matches "John" or "Doe"
@@ -330,7 +336,7 @@ class FuzzyMatchEngine
                 return 0.99;
             }
         }
-        
+
         // ========================================
         // PRIORITY 3: Field starts with search word (95%)
         // ========================================
@@ -340,7 +346,7 @@ class FuzzyMatchEngine
                 return 0.95;
             }
         }
-        
+
         // ========================================
         // PRIORITY 4: FUZZY MATCHING (Capped at 89%)
         // Uses Jaro-Winkler + Metaphone phonetic bonus
@@ -350,12 +356,12 @@ class FuzzyMatchEngine
         foreach ($searchWords as $searchWord) {
             // Jaro-Winkler similarity (best for names)
             $jaroScore = $this->jaroWinkler($searchWord, $fieldValue);
-            
+
             // Metaphone phonetic match (+0.10 bonus, same as JavaScript)
             if (metaphone($searchWord) === metaphone($fieldValue)) {
                 $jaroScore = $jaroScore + 0.10;
             }
-            
+
             // Cap fuzzy at 89% to stay below exact matches
             if ($jaroScore >= 0.70) {
                 $maxScore = max($maxScore, min(0.89, $jaroScore));
@@ -368,7 +374,7 @@ class FuzzyMatchEngine
     /**
      * Match ID numbers (NIC, BR Number) using strict matching
      * Best for: NIC, RegistrationNumber
-     * 
+     *
      * Priority order (matching JavaScript):
      * 1. Exact match (100%)
      * 2. Ends with / suffix match (95%)
@@ -422,7 +428,7 @@ class FuzzyMatchEngine
     /**
      * Match phone numbers using suffix matching
      * Best for: MobileTelephone, Phone
-     * 
+     *
      * Priority order (matching JavaScript):
      * 1. Exact match (100%)
      * 2. Ends with / suffix match (90-95%)
@@ -476,7 +482,7 @@ class FuzzyMatchEngine
             $fieldSuffix = substr($fieldDigits, -$suffixLen);
             $distance = levenshtein($fieldSuffix, $searchDigits);
             $maxLen = max(strlen($fieldSuffix), strlen($searchDigits));
-            
+
             if ($distance <= 2 && $maxLen > 0) {
                 // Score based on similarity, capped at 80%
                 $similarity = 1 - ($distance / $maxLen);
@@ -490,7 +496,7 @@ class FuzzyMatchEngine
     /**
      * Match email addresses using trigram similarity
      * Best for: Email
-     * 
+     *
      * Priority order (matching JavaScript):
      * 1. Exact match (100%)
      * 2. Contains / partial match (85%)
@@ -518,7 +524,7 @@ class FuzzyMatchEngine
 
         // PRIORITY 3: Trigram similarity for fuzzy matching
         $trigram = $this->ngramSimilarity($searchNorm, $fieldNorm, 3);
-        
+
         if ($trigram >= $threshold) {
             return $trigram;
         }
@@ -529,7 +535,7 @@ class FuzzyMatchEngine
     /**
      * Match organization names using trigram similarity
      * Best for: Name (Organization), TradingName
-     * 
+     *
      * Priority order (matching JavaScript):
      * 1. Exact match (100%)
      * 2. Contains (90%)
@@ -563,7 +569,7 @@ class FuzzyMatchEngine
 
         // PRIORITY 4: Trigram similarity for partial matches
         $trigram = $this->ngramSimilarity($searchNorm, $fieldNorm, 3);
-        
+
         if ($trigram >= $threshold) {
             return $trigram;
         }
@@ -593,7 +599,7 @@ class FuzzyMatchEngine
      * Jaro-Winkler similarity algorithm
      * Best for comparing short strings like names
      * Gives extra weight to matching prefixes
-     * 
+     *
      * @return float Similarity score between 0 and 1
      */
     protected function jaroWinkler(string $s1, string $s2): float
@@ -613,10 +619,10 @@ class FuzzyMatchEngine
 
         // Calculate Jaro distance first
         $matchWindow = max(intval(max($len1, $len2) / 2) - 1, 0);
-        
+
         $s1Matches = array_fill(0, $len1, false);
         $s2Matches = array_fill(0, $len2, false);
-        
+
         $matches = 0;
         $transpositions = 0;
 
@@ -718,7 +724,7 @@ class FuzzyMatchEngine
         if ($maxLen > 0) {
             $distance = levenshtein($word1, $word2);
             $maxDistance = self::config()->get('max_levenshtein_distance');
-            
+
             if ($distance <= $maxDistance) {
                 // Convert distance to similarity score
                 $similarity = 1 - ($distance / $maxLen);
@@ -781,7 +787,7 @@ class FuzzyMatchEngine
             // Common phonetic substitutions
             $substitutions = [
                 'ph' => 'f',
-                'ck' => 'k', 
+                'ck' => 'k',
                 'ee' => 'i',
                 'oo' => 'u',
                 'ou' => 'o',
@@ -840,7 +846,7 @@ class FuzzyMatchEngine
         // Remove special characters and split
         $str = preg_replace('/[^\w\s]/', ' ', $str);
         $words = preg_split('/\s+/', trim($str));
-        
+
         return array_filter($words, fn($w) => strlen($w) >= 1);
     }
 
@@ -851,10 +857,10 @@ class FuzzyMatchEngine
     {
         // Remove SQL injection attempts
         $term = preg_replace('/[\'";]/', '', $term);
-        
+
         // Remove multiple spaces
         $term = preg_replace('/\s+/', ' ', $term);
-        
+
         return trim($term);
     }
 
@@ -899,7 +905,7 @@ class FuzzyMatchEngine
     {
         $searchTerm = strtolower(trim($searchTerm));
         $fieldValue = strtolower(trim($fieldValue));
-        
+
         $explanation = [
             'searchTerm' => $searchTerm,
             'fieldValue' => $fieldValue,
@@ -910,25 +916,25 @@ class FuzzyMatchEngine
         if ($fieldValue === $searchTerm) {
             $explanation['matches'][] = ['type' => 'exact', 'score' => 1.0];
         }
-        
+
         if (strpos($fieldValue, $searchTerm) === 0) {
             $explanation['matches'][] = ['type' => 'starts_with', 'score' => 0.9];
         }
-        
+
         if (strpos($fieldValue, $searchTerm) !== false) {
             $explanation['matches'][] = ['type' => 'contains', 'score' => 0.7];
         }
-        
+
         if (soundex($searchTerm) === soundex($fieldValue)) {
-            $explanation['matches'][] = ['type' => 'soundex', 'score' => 0.6, 
+            $explanation['matches'][] = ['type' => 'soundex', 'score' => 0.6,
                 'detail' => soundex($searchTerm)];
         }
-        
+
         if (metaphone($searchTerm) === metaphone($fieldValue)) {
             $explanation['matches'][] = ['type' => 'metaphone', 'score' => 0.65,
                 'detail' => metaphone($searchTerm)];
         }
-        
+
         $distance = levenshtein($searchTerm, $fieldValue);
         $maxLen = max(strlen($searchTerm), strlen($fieldValue));
         $explanation['matches'][] = [
@@ -936,7 +942,7 @@ class FuzzyMatchEngine
             'distance' => $distance,
             'similarity' => $maxLen > 0 ? round(1 - ($distance / $maxLen), 2) : 0
         ];
-        
+
         $ngramScore = $this->ngramSimilarity($searchTerm, $fieldValue, 2);
         $explanation['matches'][] = [
             'type' => 'ngram',
@@ -944,7 +950,7 @@ class FuzzyMatchEngine
         ];
 
         $explanation['finalScore'] = $this->calculateWordSimilarity($searchTerm, $fieldValue);
-        
+
         return $explanation;
     }
 }

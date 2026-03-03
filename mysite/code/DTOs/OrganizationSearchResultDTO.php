@@ -4,7 +4,7 @@ namespace LKDomains\DTOs;
 
 /**
  * Organization Search Result DTO
- * 
+ *
  * Data Transfer Object for organization search results.
  * Includes access control information and masked data.
  */

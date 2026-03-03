@@ -4,7 +4,7 @@ namespace LKDomains\DTOs;
 
 /**
  * Customer Search Result DTO
- * 
+ *
  * Data Transfer Object for customer search results.
  * Contains only masked/safe-to-display data for privacy compliance.
  */

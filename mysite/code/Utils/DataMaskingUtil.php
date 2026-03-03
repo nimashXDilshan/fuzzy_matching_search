@@ -4,17 +4,17 @@ namespace LKDomains\Utils;
 
 /**
  * Data Masking Utility
- * 
+ *
  * Privacy-compliant masking functions for sensitive data.
- * 
- * Key Principle: Show enough to identify ("Yes, that's me") 
+ *
+ * Key Principle: Show enough to identify ("Yes, that's me")
  * but not enough for identity theft.
  */
 class DataMaskingUtil
 {
     /**
      * Mask an email address
-     * 
+     *
      * Examples:
      * - "john.doe@gmail.com" -> "j****@gmail.com"
      * - "test@example.org" -> "t***@example.org"
@@ -48,7 +48,7 @@ class DataMaskingUtil
 
     /**
      * Mask a NIC number (Sri Lankan ID)
-     * 
+     *
      * Examples:
      * - "123456789V" -> "123****89V"
      * - "200012345678" -> "2000****5678"
@@ -86,7 +86,7 @@ class DataMaskingUtil
 
     /**
      * Mask a phone number
-     * 
+     *
      * Examples:
      * - "0771234567" -> "****** 4567"
      * - "+94771234567" -> "****** 4567"
@@ -112,7 +112,7 @@ class DataMaskingUtil
 
     /**
      * Mask a name (typically surname)
-     * 
+     *
      * Examples:
      * - "Perera" -> "P***ra"
      * - "De Silva" -> "De S***a"
@@ -141,7 +141,7 @@ class DataMaskingUtil
 
     /**
      * Mask a Business Registration number
-     * 
+     *
      * Examples:
      * - "PV12345678" -> "PV***678"
      * - "123456" -> "***456"
@@ -164,11 +164,11 @@ class DataMaskingUtil
             $prefix = $matches[1];
             $number = $matches[2];
             $numLen = strlen($number);
-            
+
             if ($numLen <= 3) {
                 return $prefix . '***';
             }
-            
+
             return $prefix . str_repeat('*', $numLen - 3) . substr($number, -3);
         }
 
@@ -191,7 +191,7 @@ class DataMaskingUtil
 
     /**
      * Mask a passport number
-     * 
+     *
      * Examples:
      * - "N1234567" -> "N****567"
      */
@@ -259,7 +259,7 @@ class DataMaskingUtil
         ];
 
         $method = $maskFunctions[$fieldName] ?? null;
-        
+
         if ($method && method_exists(self::class, $method)) {
             return self::$method($value);
         }
@@ -269,7 +269,7 @@ class DataMaskingUtil
         if ($len <= 2) {
             return str_repeat('*', $len);
         }
-        
+
         return substr($value, 0, 1) . str_repeat('*', $len - 2) . substr($value, -1);
     }
 

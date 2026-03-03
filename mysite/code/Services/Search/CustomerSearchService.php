@@ -10,7 +10,7 @@ use SilverStripe\Core\Injector\Injectable;
 
 /**
  * Customer Search Service
- * 
+ *
  * Implements fuzzy search for individual customers with:
  * - Multiple field searching (Name, NIC, Email, Phone)
  * - Privacy-compliant masked results
@@ -27,7 +27,7 @@ class CustomerSearchService
      */
     private static $searchable_fields = [
         'FirstName',
-        'Surname', 
+        'Surname',
         'NIC',
         'Email',
         'MobileTelephone',
@@ -68,7 +68,7 @@ class CustomerSearchService
     public function search(string $searchTerm, array $options = []): array
     {
         $searchTerm = trim($searchTerm);
-        
+
         // Validate minimum search length
         if (strlen($searchTerm) < self::config()->get('min_search_length')) {
             return [];
@@ -153,7 +153,7 @@ class CustomerSearchService
                         break;
                 }
             }
-            
+
             if (!empty($mappedFields)) {
                 return array_unique($mappedFields);
             }
@@ -210,7 +210,7 @@ class CustomerSearchService
 
     /**
      * Convert fuzzy results to masked DTOs
-     * 
+     *
      * Privacy principle: Show enough to identify, not enough to steal
      */
     protected function convertToMaskedDTOs(array $fuzzyResults, string $searchTerm): array
@@ -281,11 +281,11 @@ class CustomerSearchService
     protected function formatLocation(Customer $customer): string
     {
         $parts = [];
-        
+
         if ($customer->Town) {
             $parts[] = $customer->Town;
         }
-        
+
         if ($customer->CountryID && $customer->Country()->exists()) {
             $parts[] = $customer->Country()->Name;
         }
@@ -331,7 +331,7 @@ class CustomerSearchService
             'onlyApproved' => true
         ]);
 
-        return array_map(function(CustomerSearchResultDTO $dto) {
+        return array_map(function (CustomerSearchResultDTO $dto) {
             return [
                 'id' => $dto->ID,
                 'label' => $dto->DisplayName,

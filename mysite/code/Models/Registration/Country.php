@@ -6,23 +6,23 @@ use SilverStripe\ORM\DataObject;
 
 /**
  * Country model
- * 
+ *
  * Lookup table for countries, required for organization registration.
  */
 class Country extends DataObject
 {
     private static $table_name = 'Country';
-    
+
     private static $db = [
         'Name' => 'Varchar(100)',
         'Code' => 'Varchar(10)',
         'IsActive' => 'Boolean',
     ];
-    
+
     private static $defaults = [
         'IsActive' => true,
     ];
-    
+
     private static $indexes = [
         'Code' => [
             'type' => 'unique',
@@ -30,15 +30,15 @@ class Country extends DataObject
         ],
         'IsActive' => true,
     ];
-    
+
     private static $default_sort = 'Name ASC';
-    
+
     private static $summary_fields = [
         'Name' => 'Country',
         'Code' => 'Code',
         'IsActive.Nice' => 'Active',
     ];
-    
+
     /**
      * Get title for dropdowns
      */
@@ -46,14 +46,14 @@ class Country extends DataObject
     {
         return $this->Name;
     }
-    
+
     /**
      * Require default countries on dev/build
      */
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
-        
+
         $countries = [
             ['Name' => 'Sri Lanka', 'Code' => 'LK'],
             ['Name' => 'India', 'Code' => 'IN'],
@@ -66,7 +66,7 @@ class Country extends DataObject
             ['Name' => 'France', 'Code' => 'FR'],
             ['Name' => 'Canada', 'Code' => 'CA'],
         ];
-        
+
         foreach ($countries as $data) {
             if (!Country::get()->filter('Code', $data['Code'])->exists()) {
                 $country = Country::create($data);

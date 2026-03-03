@@ -6,14 +6,14 @@ use SilverStripe\ORM\DataObject;
 
 /**
  * DomainReason model
- * 
+ *
  * Defines the purpose/reason for domain registration.
  * Used to determine allowed registrant types (individual vs organization).
  */
 class DomainReason extends DataObject
 {
     private static $table_name = 'DomainReason';
-    
+
     private static $db = [
         'Name' => 'Varchar(100)',
         'Description' => 'Text',
@@ -23,14 +23,14 @@ class DomainReason extends DataObject
         'IsActive' => 'Boolean',
         'SortOrder' => 'Int',
     ];
-    
+
     private static $defaults = [
         'AllowIndividual' => true,
         'AllowOrganization' => true,
         'IsActive' => true,
         'SortOrder' => 0,
     ];
-    
+
     private static $indexes = [
         'Code' => [
             'type' => 'unique',
@@ -38,9 +38,9 @@ class DomainReason extends DataObject
         ],
         'IsActive' => true,
     ];
-    
+
     private static $default_sort = 'SortOrder ASC, Name ASC';
-    
+
     private static $summary_fields = [
         'Name' => 'Reason',
         'Code' => 'Code',
@@ -48,27 +48,27 @@ class DomainReason extends DataObject
         'AllowOrganization.Nice' => 'Organization',
         'IsActive.Nice' => 'Active',
     ];
-    
+
     /**
      * Get allowed registrant types for this reason
-     * 
+     *
      * @return array List of allowed types: 'individual', 'organization', or both
      */
     public function getAllowedTypes(): array
     {
         $types = [];
-        
+
         if ($this->AllowIndividual) {
             $types[] = 'individual';
         }
-        
+
         if ($this->AllowOrganization) {
             $types[] = 'organization';
         }
-        
+
         return $types;
     }
-    
+
     /**
      * Check if individual registrant is allowed
      */
@@ -76,7 +76,7 @@ class DomainReason extends DataObject
     {
         return (bool) $this->AllowIndividual;
     }
-    
+
     /**
      * Check if organization registrant is allowed
      */
@@ -84,14 +84,14 @@ class DomainReason extends DataObject
     {
         return (bool) $this->AllowOrganization;
     }
-    
+
     /**
      * Require default domain reasons on dev/build
      */
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
-        
+
         $defaults = [
             [
                 'Name' => 'Personal/Individual',
@@ -136,7 +136,7 @@ class DomainReason extends DataObject
                 'Description' => 'General purpose registration',
             ],
         ];
-        
+
         foreach ($defaults as $index => $data) {
             if (!DomainReason::get()->filter('Code', $data['Code'])->exists()) {
                 $reason = DomainReason::create($data);

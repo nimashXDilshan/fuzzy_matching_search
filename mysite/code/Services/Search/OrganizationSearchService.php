@@ -12,7 +12,7 @@ use SilverStripe\Core\Injector\Injectable;
 
 /**
  * Organization Search Service
- * 
+ *
  * Implements fuzzy search for organizations with:
  * - Multiple field searching (Name, BR Number)
  * - Access control: Only shows organizations linked to user account
@@ -54,7 +54,7 @@ class OrganizationSearchService
 
     /**
      * Search for organizations using fuzzy matching
-     * 
+     *
      * @param string $searchTerm The search query
      * @param int|null $customerId Current customer ID for access filtering
      * @param array $options Search options:
@@ -66,7 +66,7 @@ class OrganizationSearchService
     public function search(string $searchTerm, ?int $customerId = null, array $options = []): array
     {
         $searchTerm = trim($searchTerm);
-        
+
         // Validate minimum search length
         if (strlen($searchTerm) < self::config()->get('min_search_length')) {
             return [];
@@ -96,7 +96,7 @@ class OrganizationSearchService
 
     /**
      * Build the base query with access control
-     * 
+     *
      * Key security feature: Users can only see organizations they're linked to
      */
     protected function buildBaseQuery(?int $customerId, array $options): \SilverStripe\ORM\DataList
@@ -114,7 +114,7 @@ class OrganizationSearchService
             if ($customerId) {
                 // Get organization IDs where this customer is a member
                 $linkedOrgIds = $this->getLinkedOrganizationIds($customerId);
-                
+
                 if (empty($linkedOrgIds)) {
                     // User is not linked to any organizations
                     // Return empty result set
@@ -160,7 +160,7 @@ class OrganizationSearchService
                         break;
                 }
             }
-            
+
             if (!empty($mappedFields)) {
                 return array_unique($mappedFields);
             }
@@ -184,7 +184,7 @@ class OrganizationSearchService
     protected function looksLikeBRNumber(string $term): bool
     {
         $term = strtoupper(preg_replace('/[\s\-]/', '', $term));
-        
+
         // Common BR patterns:
         // - PV12345 (Private company)
         // - PB12345 (Public company)
@@ -194,7 +194,7 @@ class OrganizationSearchService
 
     /**
      * Convert fuzzy results to masked DTOs
-     * 
+     *
      * Privacy handling:
      * - For linked organizations: show more details
      * - For search results: show limited info
@@ -241,7 +241,7 @@ class OrganizationSearchService
                         'OrganizationID' => $org->ID
                     ])
                     ->first();
-                
+
                 if ($membership) {
                     $dto->MembershipRole = $this->getMembershipRole($membership);
                     $dto->CanActAsBilling = (bool)$membership->IsBilling;
@@ -270,11 +270,11 @@ class OrganizationSearchService
     protected function formatLocation(Organization $org): string
     {
         $parts = [];
-        
+
         if ($org->Town) {
             $parts[] = $org->Town;
         }
-        
+
         if ($org->CountryID && $org->Country()->exists()) {
             $parts[] = $org->Country()->Name;
         }
@@ -288,7 +288,7 @@ class OrganizationSearchService
     protected function getMembershipRole(OrganizationMember $membership): string
     {
         $roles = [];
-        
+
         if ($membership->IsAdmin) {
             $roles[] = 'Admin';
         }
@@ -401,7 +401,7 @@ class OrganizationSearchService
             'onlyApproved' => true
         ]);
 
-        return array_map(function(OrganizationSearchResultDTO $dto) {
+        return array_map(function (OrganizationSearchResultDTO $dto) {
             return [
                 'id' => $dto->ID,
                 'label' => $dto->DisplayName,
