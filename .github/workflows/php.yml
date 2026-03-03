@@ -20,7 +20,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
-        extensions: mbstring, intl, mysqli, gd, sqlite3
+        extensions: mysqli, gd, intl, zip, sqlite3
         coverage: none
 
     - name: Validate composer.json

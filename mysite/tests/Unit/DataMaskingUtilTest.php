@@ -71,7 +71,7 @@ class DataMaskingUtilTest extends SapphireTest
         $this->assertEquals('PV******678', DataMaskingUtil::maskBRNumber('PV123455678'));
         
         // Pure numeric BR number
-        $this->assertEquals('***678', DataMaskingUtil::maskBRNumber('123455678'));
+        $this->assertEquals('******678', DataMaskingUtil::maskBRNumber('123455678'));
         
         // Empty BR number
         $this->assertEquals('', DataMaskingUtil::maskBRNumber(''));
