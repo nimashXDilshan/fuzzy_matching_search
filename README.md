@@ -1,5 +1,7 @@
 # Fuzzy Matching & Search – Customer & Organization
 
+**Last Updated: March 3, 2026 (Stability & CI/CD Fixes)**
+
 [![PHP CI](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml/badge.svg)](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml)
 
 ## Project Overview
