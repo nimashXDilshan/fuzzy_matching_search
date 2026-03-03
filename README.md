@@ -1,6 +1,9 @@
 # Fuzzy Matching & Search – Customer & Organization
 
-A SilverStripe module providing fuzzy matching and search functionality for customer and organization data during domain registration.
+[![PHP CI](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml/badge.svg)](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml)
+
+## Project Overview
+Stripe module providing fuzzy matching and search functionality for customer and organization data during domain registration.
 
 ## Features
 
@@ -223,6 +226,7 @@ You can run the entire application and its database using Docker Compose:
    docker-compose exec app vendor/bin/sake dev/build flush=1
    ```
 
+
 ### Docker Hub Automation
 The project is configured with GitHub Actions to automatically build and push Docker images.
 
@@ -233,6 +237,9 @@ The project is configured with GitHub Actions to automatically build and push Do
 The image will be pushed as `<your-username>/fuzzy-matching-search:latest`.
 
 ## Data Masking
+
+
+
 
 All search results automatically mask sensitive data:
 
