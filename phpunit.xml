@@ -29,6 +29,9 @@
 
     <php>
         <env name="SS_ENVIRONMENT_TYPE" value="dev"/>
+        <env name="SS_DATABASE_CLASS" value="SilverStripe\SQLite\SQLite3Database"/>
+        <env name="SS_DATABASE_NAME" value=":memory:"/>
+        <env name="SS_DATABASE_MEMORY" value="1"/>
     </php>
 </phpunit>
 
