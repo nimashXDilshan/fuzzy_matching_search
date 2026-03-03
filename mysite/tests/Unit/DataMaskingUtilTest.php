@@ -7,6 +7,7 @@ use SilverStripe\Dev\SapphireTest;
 
 /**
  * Unit tests for DataMaskingUtil
+ * Version: 2026.03.03.1
  */
 class DataMaskingUtilTest extends SapphireTest
 {

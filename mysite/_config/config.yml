@@ -10,3 +10,8 @@ SilverStripe\ORM\Connect\MySQLDatabase:
 # Enable full-text search
 SilverStripe\ORM\DatabaseAdmin:
   require_default_records: true
+
+# Fix for SQLite3 queryCache on null
+SilverStripe\SQLite\SQLite3Database:
+  properties:
+    queryCache: '%$QueryCache'
