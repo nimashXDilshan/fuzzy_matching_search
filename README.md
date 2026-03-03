@@ -160,6 +160,7 @@ Content-Type: application/json
 In your SilverStripe template:
 ```html
 <% include RegistrantSearch %>
+<!-- Manual CI Trigger: 2026-03-03 -->
 ```
 
 ### JavaScript API
