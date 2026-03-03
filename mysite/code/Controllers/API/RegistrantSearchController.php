@@ -159,7 +159,7 @@ class RegistrantSearchController extends Controller
             // `looksLikeBRNumber`, `convertToMaskedDTOs`, `formatLocation`,
             // `getMembershipRole`, `determineMatchContext`,
             // `getOrganizationsForBilling`, `validateSelection`, `quickSearch`.
-            // So `searchAll` likely doesn't exist and the original code 
+            // So `searchAll` likely doesn't exist and the original code
             // might have been broken or I missed something.
             // However, `search` takes options. `showAllOrganizations` is an option in `search`.
             // I will replace `searchAll` with `search` and `showAllOrganizations` => true if customerId is missing?
