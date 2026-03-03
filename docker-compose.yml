@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - SS_DATABASE_SERVER=db
+      - SS_DATABASE_NAME=registrant_search
+      - SS_DATABASE_USERNAME=root
+      - SS_DATABASE_PASSWORD=root_password
+      - SS_ENVIRONMENT_TYPE=dev
+    volumes:
+      - .:/var/www/html
+      - app_assets:/var/www/html/assets
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    environment:
+      - MYSQL_DATABASE=registrant_search
+      - MYSQL_ROOT_PASSWORD=root_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  app_assets:
+  db_data:

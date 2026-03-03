@@ -207,6 +207,31 @@ You can run a standalone interactive demo of the search component:
    ```
 2. Open your browser and visit: [http://localhost:8123/demo/index.html](http://localhost:8123/demo/index.html)
 
+## Docker Usage
+
+### Local Development
+You can run the entire application and its database using Docker Compose:
+
+1. Copy `.env.example` to `.env`.
+2. Start the containers:
+   ```bash
+   docker-compose up -d
+   ```
+3. The app will be available at [http://localhost:8080](http://localhost:8080).
+4. Run migrations:
+   ```bash
+   docker-compose exec app vendor/bin/sake dev/build flush=1
+   ```
+
+### Docker Hub Automation
+The project is configured with GitHub Actions to automatically build and push Docker images.
+
+**Required GitHub Secrets:**
+- `DOCKERHUB_USERNAME`: Your Docker Hub username.
+- `DOCKERHUB_TOKEN`: Your Docker Hub Personal Access Token.
+
+The image will be pushed as `<your-username>/fuzzy-matching-search:latest`.
+
 ## Data Masking
 
 All search results automatically mask sensitive data:
