@@ -10,16 +10,3 @@ SilverStripe\ORM\Connect\MySQLDatabase:
 # Enable full-text search
 SilverStripe\ORM\DatabaseAdmin:
   require_default_records: true
-
----
-Name: lkdomains-models
----
-
-# Expose models to ORM
-SilverStripe\ORM\DataObject:
-  extensions:
-    - LKDomains\Models\Members\Customer
-    - LKDomains\Models\Organizations\Organization
-    - LKDomains\Models\Members\OrganizationMember
-    - LKDomains\Models\Registration\DomainReason
-    - LKDomains\Models\Registration\Country

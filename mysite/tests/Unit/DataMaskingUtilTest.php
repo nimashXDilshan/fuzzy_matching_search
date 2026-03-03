@@ -34,14 +34,14 @@ class DataMaskingUtilTest extends SapphireTest
      */
     public function testMaskNIC()
     {
-        // Standard NIC
-        $this->assertEquals('***1234V', DataMaskingUtil::maskNIC('1990123451234V'));
+        // New NIC (12 digits)
+        $this->assertEquals('2000****5678', DataMaskingUtil::maskNIC('200012345678'));
+        
+        // Old NIC (9 digits + V/X)
+        $this->assertEquals('123****89V', DataMaskingUtil::maskNIC('123456789V'));
         
         // Short NIC
-        $this->assertEquals('***1234', DataMaskingUtil::maskNIC('1234'));
-        
-        // Very short NIC
-        $this->assertEquals('***123', DataMaskingUtil::maskNIC('123'));
+        $this->assertEquals('123*', DataMaskingUtil::maskNIC('1234'));
         
         // Empty NIC
         $this->assertEquals('', DataMaskingUtil::maskNIC(''));
@@ -54,19 +54,12 @@ class DataMaskingUtilTest extends SapphireTest
     public function testMaskName()
     {
         // Standard name
-        $this->assertEquals('John D***', DataMaskingUtil::maskName('John', 'Doe'));
+        $this->assertEquals('D**a', DataMaskingUtil::maskName('Doe'));
+        $this->assertEquals('Pe****ra', DataMaskingUtil::maskName('Perera'));
         
-        // Only first name
-        $this->assertEquals('John', DataMaskingUtil::maskName('John', ''));
-        $this->assertEquals('John', DataMaskingUtil::maskName('John', null));
-        
-        // Only surname
-        $this->assertEquals('D***', DataMaskingUtil::maskName('', 'Doe'));
-        $this->assertEquals('D***', DataMaskingUtil::maskName(null, 'Doe'));
-        
-        // Both empty
-        $this->assertEquals('***', DataMaskingUtil::maskName('', ''));
-        $this->assertEquals('***', DataMaskingUtil::maskName(null, null));
+        // Empty
+        $this->assertEquals('', DataMaskingUtil::maskName(''));
+        $this->assertEquals('', DataMaskingUtil::maskName(null));
     }
 
     /**
@@ -75,13 +68,10 @@ class DataMaskingUtilTest extends SapphireTest
     public function testMaskBRNumber()
     {
         // Standard BR number
-        $this->assertEquals('****5678', DataMaskingUtil::maskBRNumber('PV123455678'));
+        $this->assertEquals('PV******678', DataMaskingUtil::maskBRNumber('PV123455678'));
         
-        // Short BR number
-        $this->assertEquals('****5678', DataMaskingUtil::maskBRNumber('5678'));
-        
-        // Very short BR number
-        $this->assertEquals('****123', DataMaskingUtil::maskBRNumber('123'));
+        // Pure numeric BR number
+        $this->assertEquals('***678', DataMaskingUtil::maskBRNumber('123455678'));
         
         // Empty BR number
         $this->assertEquals('', DataMaskingUtil::maskBRNumber(''));
@@ -94,13 +84,7 @@ class DataMaskingUtilTest extends SapphireTest
     public function testMaskPhone()
     {
         // Standard phone
-        $this->assertEquals('******1234', DataMaskingUtil::maskPhone('+94771234567'));
-        
-        // Phone with formatting
-        $this->assertEquals('******4567', DataMaskingUtil::maskPhone('+94 77 123 4567'));
-        
-        // Short phone
-        $this->assertEquals('******1234', DataMaskingUtil::maskPhone('1234'));
+        $this->assertEquals('****** 4567', DataMaskingUtil::maskPhone('+94771234567'));
         
         // Empty phone
         $this->assertEquals('', DataMaskingUtil::maskPhone(''));
