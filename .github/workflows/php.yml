@@ -41,6 +41,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Warm up manifest
+      run: vendor/bin/sake dev/build flush=1
+
     - name: Run test suite
       run: composer test
 
