@@ -18,6 +18,7 @@ class Organization extends DataObject
     
     private static $db = [
         'Name' => 'Text',
+        'TradingName' => 'Varchar(256)',
         'RegistrationNumber' => 'Varchar(100)',
         'IsApproved' => 'Boolean',
     ];
