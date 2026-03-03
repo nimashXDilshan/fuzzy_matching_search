@@ -5,41 +5,33 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libicu-dev \
     libzip-dev \
+    libicu-dev \
+    zip \
     unzip \
     git \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-    mysqli \
-    gd \
-    intl \
-    zip
+    && docker-php-ext-install -j$(nproc) gd mysqli zip intl
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
 
 # Copy project files
-COPY . .
+COPY . /var/www/html/
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/assets
 
-# Install dependencies (ignoring scripts for now to avoid db connection errors during build)
-RUN composer install --no-interaction --no-scripts --prefer-dist
-
-# Create necessary SilverStripe directories and set permissions
-RUN mkdir -p silverstripe-cache assets \
-    && chown -R www-data:www-data /var/www/html
-
-# Expose port 80
+# Expose port
 EXPOSE 80
 
-# Default command
 CMD ["apache2-foreground"]

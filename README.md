@@ -1,20 +1,18 @@
 # Fuzzy Matching & Search – Customer & Organization
 
-**Last Updated: March 3, 2026 (Stability & CI/CD Fixes)**
+**Last Updated: March 3, 2026 (Mock Data Demo Focus)**
 
 [![PHP CI](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml/badge.svg)](https://github.com/nimashXDilshan/fuzzy_matching_search/actions/workflows/php.yml)
 
 ## Project Overview
-Stripe module providing fuzzy matching and search functionality for customer and organization data during domain registration.
 
-## Features
+This repository contains a **Fuzzy Search & Matching Demo** designed for customer and organization data. It showcases how to handle typos, phonetic variations, and data masking while maintaining high search accuracy.
 
-- **Fuzzy Customer Search**: Search by name, NIC, email, or phone with intelligent matching
-- **Organization Search**: Search organizations by name or BR number with membership filtering
-- **Data Privacy**: All sensitive data is automatically masked in search results
-- **Registrant Type Resolution**: Automatic type switching based on domain reason selection
-- **Modern UI**: Responsive search component with debouncing and real-time results
-- **Full-Text Search**: MySQL full-text indexing with LIKE fallback
+### Key Features (Demo)
+- **Fuzzy Search**: Implements Levenshtein, Soundex, Metaphone, and N-Gram algorithms.
+- **Large Dataset**: Tested with 10,000+ mock individual and organization records.
+- **Data Masking**: Automatically masks sensitive fields like NIC, Phone, and Email.
+- **Instant Results**: Client-side filtering for immediate UI feedback.
 
 ## Requirements
 

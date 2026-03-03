@@ -3,19 +3,6 @@ Name: lkdomains
 After: 'framework/*'
 ---
 
-# Database configuration
-SilverStripe\ORM\Connect\MySQLDatabase:
-  connection_charset: utf8mb4
-
-# Enable full-text search
+# Enable default record requirement
 SilverStripe\ORM\DatabaseAdmin:
   require_default_records: true
-
-# Fix for SQLite3 queryCache on null in tests
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\ORM\Connect\Database:
-    class: SilverStripe\SQLite\SQLite3Database
-    properties:
-      queryCache: '%$QueryCache'
-  SilverStripe\ORM\Connect\QueryCache:
-    class: SilverStripe\ORM\Connect\BasicQueryCache
