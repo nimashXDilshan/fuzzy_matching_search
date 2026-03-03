@@ -1,0 +1,63 @@
+LKDomains\Models\Registration\DomainReason:
+  reason_personal:
+    Name: Personal/Individual
+    Code: PERSONAL
+    Description: Personal use by an individual
+    AllowIndividual: true
+    AllowOrganization: false
+    IsActive: true
+    SortOrder: 0
+
+  reason_business:
+    Name: Business/Commercial
+    Code: BUSINESS
+    Description: Commercial business purposes
+    AllowIndividual: false
+    AllowOrganization: true
+    IsActive: true
+    SortOrder: 1
+
+  reason_government:
+    Name: Government Entity
+    Code: GOVERNMENT
+    Description: Government department or agency
+    AllowIndividual: false
+    AllowOrganization: true
+    IsActive: true
+    SortOrder: 2
+
+  reason_education:
+    Name: Educational Institution
+    Code: EDUCATION
+    Description: School or university
+    AllowIndividual: false
+    AllowOrganization: true
+    IsActive: true
+    SortOrder: 3
+
+  reason_nonprofit:
+    Name: Non-Profit Organization
+    Code: NONPROFIT
+    Description: Charitable organization
+    AllowIndividual: false
+    AllowOrganization: true
+    IsActive: true
+    SortOrder: 4
+
+  reason_general:
+    Name: General Purpose
+    Code: GENERAL
+    Description: General purpose registration
+    AllowIndividual: true
+    AllowOrganization: true
+    IsActive: true
+    SortOrder: 5
+
+  reason_inactive:
+    Name: Inactive Reason
+    Code: INACTIVE
+    Description: This reason is not active
+    AllowIndividual: true
+    AllowOrganization: true
+    IsActive: false
+    SortOrder: 99

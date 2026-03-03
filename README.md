@@ -1,0 +1,234 @@
+# Fuzzy Matching & Search – Customer & Organization
+
+A SilverStripe module providing fuzzy matching and search functionality for customer and organization data during domain registration.
+
+## Features
+
+- **Fuzzy Customer Search**: Search by name, NIC, email, or phone with intelligent matching
+- **Organization Search**: Search organizations by name or BR number with membership filtering
+- **Data Privacy**: All sensitive data is automatically masked in search results
+- **Registrant Type Resolution**: Automatic type switching based on domain reason selection
+- **Modern UI**: Responsive search component with debouncing and real-time results
+- **Full-Text Search**: MySQL full-text indexing with LIKE fallback
+
+## Requirements
+
+- PHP 8.1+
+- SilverStripe Framework 5.0+
+- MySQL 5.7+ or MariaDB 10.2+
+
+## Installation
+
+1. **Clone or copy the project:**
+   ```bash
+   cd /path/to/your/silverstripe-project
+   cp -r /path/to/this/module mysite
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   composer install
+   ```
+
+3. **Run database migration:**
+   ```bash
+   vendor/bin/sake dev/build flush=1
+   ```
+
+4. **Create full-text indexes:**
+   ```bash
+   mysql -u root -p your_database < database/migrations/create_indexes.sql
+   ```
+
+5. **Optimize search performance (Optional):**
+   Run the optimization migration to improve search speed for organizations and customer filtering:
+   ```bash
+   mysql -u root -p your_database < database/migrations/optimize_search_indexes.sql
+   ```
+
+## Project Structure
+
+```
+mysite/
+├── _config/
+│   ├── config.yml          # SilverStripe configuration
+│   └── routes.yml          # API route definitions
+├── code/
+│   ├── Controllers/API/
+│   │   └── RegistrantSearchController.php
+│   ├── DTOs/
+│   │   ├── CustomerSearchResultDTO.php
+│   │   └── OrganizationSearchResultDTO.php
+│   ├── Models/
+│   │   ├── Members/
+│   │   │   ├── Customer.php
+│   │   │   └── OrganizationMember.php
+│   │   ├── Organizations/
+│   │   │   └── Organization.php
+│   │   └── Registration/
+│   │       ├── Country.php
+│   │       └── DomainReason.php
+│   ├── Policies/
+│   │   └── OrganizationAccessPolicy.php
+│   ├── Services/
+│   │   ├── Registration/
+│   │   │   └── RegistrantTypeResolver.php
+│   │   └── Search/
+│   │       ├── CustomerSearchService.php
+│   │       ├── FuzzyMatchEngine.php
+│   │       └── OrganizationSearchService.php
+│   └── Utils/
+│       └── DataMaskingUtil.php
+├── css/
+│   └── registrant-search.css
+├── javascript/
+│   └── registrant-search.js
+├── templates/Includes/
+│   └── RegistrantSearch.ss
+└── tests/
+    ├── Integration/
+    │   └── RegistrantSearchControllerTest.php
+    └── Unit/
+        ├── CustomerSearchServiceTest.php
+        ├── DataMaskingUtilTest.php
+        ├── OrganizationSearchServiceTest.php
+        └── RegistrantTypeResolverTest.php
+```
+
+## API Endpoints
+
+### Search Customers
+```http
+POST /api/registration/search-customers
+Content-Type: application/json
+
+{
+  "searchTerm": "john",
+  "searchFields": ["name", "nic", "email", "phone"],
+  "limit": 20,
+  "offset": 0
+}
+```
+
+### Search Organizations
+```http
+POST /api/registration/search-organizations
+Content-Type: application/json
+
+{
+  "searchTerm": "company",
+  "limit": 20,
+  "offset": 0
+}
+```
+
+### Get Domain Reasons
+```http
+GET /api/registration/domain-reasons
+```
+
+### Get Registrant Types
+```http
+GET /api/registration/registrant-types/{domainReasonId}
+```
+
+### Get Countries
+```http
+GET /api/registration/countries
+```
+
+### Validate Selection
+```http
+POST /api/registration/validate-selection
+Content-Type: application/json
+
+{
+  "registrantType": "organization",
+  "domainReasonId": 3,
+  "registrantId": 567,
+  "countryId": 1
+}
+```
+
+## Usage
+
+### Include the Search Component
+
+In your SilverStripe template:
+```html
+<% include RegistrantSearch %>
+```
+
+### JavaScript API
+
+```javascript
+// Initialize with custom options
+const search = new RegistrantSearch({
+    containerSelector: '#my-container',
+    debounceMs: 400,
+    minSearchLength: 3
+});
+
+// Listen for events
+document.addEventListener('registrantSearch:selectionConfirmed', (e) => {
+    console.log('Selected:', e.detail);
+});
+
+document.addEventListener('registrantSearch:createNew', (e) => {
+    console.log('Create new:', e.detail);
+});
+```
+
+```bash
+# Run all tests
+composer test
+
+# Run unit tests only
+composer test:unit
+
+# Run integration tests only  
+composer test:integration
+
+# Run code linting
+composer lint
+```
+
+### Backend Algorithm Tests
+A standalone PHP script is provided to test the fuzzy matching algorithms in isolation:
+```bash
+php test_algorithms.php
+```
+
+## Running the UI Demo
+You can run a standalone interactive demo of the search component:
+1. Start the PHP development server:
+   ```bash
+   php -S localhost:8123
+   ```
+2. Open your browser and visit: [http://localhost:8123/demo/index.html](http://localhost:8123/demo/index.html)
+
+## Data Masking
+
+All search results automatically mask sensitive data:
+
+| Field | Original | Masked |
+|-------|----------|--------|
+| Email | john.doe@gmail.com | jo***@gmail.com |
+| NIC | 199012345678V | ***5678V |
+| Name | John Doe | John D*** |
+| BR Number | PV12345678 | ****5678 |
+
+## Domain Reason Types
+
+| Reason | Individual | Organization |
+|--------|------------|--------------|
+| Personal/Individual | ✅ | ❌ |
+| Business/Commercial | ❌ | ✅ |
+| Government Entity | ❌ | ✅ |
+| Educational Institution | ❌ | ✅ |
+| Non-Profit Organization | ❌ | ✅ |
+| General Purpose | ✅ | ✅ |
+
+## License
+
+BSD-3-Clause

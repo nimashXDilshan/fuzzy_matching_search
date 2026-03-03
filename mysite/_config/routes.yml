@@ -1,0 +1,7 @@
+---
+Name: registrant-search-routes
+After: 'framework/*'
+---
+SilverStripe\Control\Director:
+  rules:
+    'api/registration': 'LKDomains\Controllers\API\RegistrantSearchController'

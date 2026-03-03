@@ -1,0 +1,24 @@
+# Composer
+vendor/
+composer.lock
+
+# SilverStripe
+assets/
+silverstripe-cache/
+.env
+_ss_environment.php
+
+# IDE
+.idea/
+.vscode/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+server.log
+*.log
+
+# Temp
+tmp/

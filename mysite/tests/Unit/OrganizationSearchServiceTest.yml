@@ -1,0 +1,63 @@
+LKDomains\Models\Registration\Country:
+  country_lk:
+    Name: Sri Lanka
+    Code: LK
+    IsActive: true
+
+  country_us:
+    Name: United States
+    Code: US
+    IsActive: true
+
+LKDomains\Models\Organizations\Organization:
+  org1:
+    Name: ABC Company (Pvt) Ltd
+    RegistrationNumber: PV12345678
+    IsApproved: true
+    Country: =>LKDomains\Models\Registration\Country.country_lk
+
+  org2:
+    Name: XYZ Corporation
+    RegistrationNumber: PV87654321
+    IsApproved: true
+    Country: =>LKDomains\Models\Registration\Country.country_us
+
+  org3:
+    Name: Pending Company
+    RegistrationNumber: PV11111111
+    IsApproved: false
+    Country: =>LKDomains\Models\Registration\Country.country_lk
+
+LKDomains\Models\Members\Customer:
+  customer1:
+    FirstName: John
+    Surname: Doe
+    Email: john.doe@example.com
+    NIC: "199012345678V"
+    ApprovalStatus: Approved
+
+  customer2:
+    FirstName: Jane
+    Surname: Smith
+    Email: jane.smith@example.com
+    NIC: "198512345678V"
+    ApprovalStatus: Approved
+
+LKDomains\Models\Members\OrganizationMember:
+  membership1:
+    Customer: =>LKDomains\Models\Members\Customer.customer1
+    Organization: =>LKDomains\Models\Organizations\Organization.org1
+    Role: Admin
+    IsApproved: true
+
+  membership2:
+    Customer: =>LKDomains\Models\Members\Customer.customer2
+    Organization: =>LKDomains\Models\Organizations\Organization.org2
+    Role: Member
+    IsApproved: true
+
+  membership_pending:
+    Customer: =>LKDomains\Models\Members\Customer.customer1
+    Organization: =>LKDomains\Models\Organizations\Organization.org2
+    Role: Member
+    IsApproved: false

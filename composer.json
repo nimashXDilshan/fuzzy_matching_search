@@ -1,0 +1,60 @@
+{
+    "name": "lkdomains/registrant-search",
+    "description": "Fuzzy matching and search system for customer and organization data during domain registration",
+    "type": "silverstripe-module",
+    "keywords": [
+        "silverstripe",
+        "fuzzy-search",
+        "customer-search",
+        "organization-search",
+        "domain-registration"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "LK Domains Development Team",
+            "email": "dev@example.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "silverstripe/framework": "^5.0",
+        "silverstripe/admin": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LKDomains\\": "mysite/code/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LKDomains\\Tests\\": "mysite/tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit mysite/tests/",
+        "test:unit": "phpunit mysite/tests/Unit/",
+        "test:integration": "phpunit mysite/tests/Integration/",
+        "lint": "phpcs --standard=PSR12 mysite/code/"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "silverstripe/vendor-plugin": true,
+            "composer/installers": true
+        }
+    },
+    "extra": {
+        "expose": [
+            "mysite/javascript",
+            "mysite/css"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+    bootstrap="vendor/silverstripe/framework/tests/bootstrap.php"
+    colors="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTodoAnnotatedTests="true"
+    failOnRisky="true"
+    failOnWarning="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>mysite/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>mysite/tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">mysite/code</directory>
+        </include>
+        <exclude>
+            <directory>mysite/code/Models</directory>
+        </exclude>
+    </coverage>
+
+    <php>
+        <env name="SS_ENVIRONMENT_TYPE" value="dev"/>
+        <env name="SS_DATABASE_CLASS" value="SilverStripe\SQLite\SQLiteDatabase"/>
+        <env name="SS_DATABASE_NAME" value=":memory:"/>
+        <env name="SS_DATABASE_MEMORY" value="1"/>
+    </php>
+</phpunit>

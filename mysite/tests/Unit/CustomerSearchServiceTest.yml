@@ -1,0 +1,58 @@
+LKDomains\Models\Members\Customer:
+  customer1:
+    FirstName: John
+    Surname: Doe
+    Email: john.doe@example.com
+    NIC: "199012345678V"
+    MobileTelephone: "+94771234567"
+    Telephone: "+94112345678"
+    ApprovalStatus: Approved
+
+  customer2:
+    FirstName: Jane
+    Surname: Smith
+    Email: jane.smith@example.com
+    NIC: "198512345678V"
+    MobileTelephone: "+94772345678"
+    ApprovalStatus: Approved
+
+  customer3:
+    FirstName: Bob
+    Surname: Johnson
+    Email: bob.johnson@example.com
+    NIC: "197512345678V"
+    MobileTelephone: "+94773456789"
+    ApprovalStatus: Pending
+
+LKDomains\Models\Registration\Country:
+  country_lk:
+    Name: Sri Lanka
+    Code: LK
+    IsActive: true
+
+  country_us:
+    Name: United States
+    Code: US
+    IsActive: true
+
+LKDomains\Models\Registration\DomainReason:
+  reason_personal:
+    Name: Personal/Individual
+    Code: PERSONAL
+    AllowIndividual: true
+    AllowOrganization: false
+    IsActive: true
+
+  reason_business:
+    Name: Business/Commercial
+    Code: BUSINESS
+    AllowIndividual: false
+    AllowOrganization: true
+    IsActive: true
+
+  reason_general:
+    Name: General Purpose
+    Code: GENERAL
+    AllowIndividual: true
+    AllowOrganization: true
+    IsActive: true
